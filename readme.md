@@ -282,6 +282,64 @@ If the number of recipes, ingredients or quantities becomes substantially larger
 
 ---
 
+# Architecture Decisions
+
+## Decision 001 — No ingredient persistence
+
+**Decision:**
+
+Available ingredient quantities are supplied by the user for each optimization request.
+
+**Why:**
+
+The assessment requires determining the optimal recipe combination from available ingredients but does not require inventory management or historical stock.
+
+**Alternative:**
+
+Persist ingredient inventory using a database.
+
+**Trade-off:**
+
+We cannot track stock across requests, but we avoid introducing persistence that isn't required by the business problem.
+
+**Assessment benefit:**
+
+Demonstrates scope discipline, stateless design, separation of concerns, and avoidance of unnecessary infrastructure.
+
+## Decision 002 — Optimization is stateless
+
+**Decision:**
+
+The optimizer operates entirely on the data supplied in the request.
+
+**Why:**
+
+The calculation does not require previous requests or shared application state.
+
+**Trade-off:**
+
+The caller must provide current ingredient quantities every time.
+
+**Assessment benefit:**
+
+Makes the core business logic deterministic, testable and horizontally scalable.
+
+## Decision 003 — User supplies quantities, application determines combination
+
+**Decision:**
+
+The caller supplies ingredient quantities; the optimization engine determines recipe quantities.
+
+**Why:**
+
+The optimization algorithm is the core business responsibility of the application.
+
+**Assessment benefit:**
+
+Keeps business logic inside the domain/application boundary rather than pushing decisions onto the client.
+
+---
+
 # API Design
 
 A possible API boundary is:
