@@ -22,20 +22,20 @@ namespace UnitTests.RecipeOptimization
                     new IngredientRequirement("Lettuce", 1)
                 }),
 
-            new Recipe(
-                "Salad",
-                1,
-                new[]
-                {
-                    new IngredientRequirement("Lettuce", 2)
-                })
-        };
+                new Recipe(
+                    "Salad",
+                    1,
+                    new[]
+                    {
+                        new IngredientRequirement("Lettuce", 2)
+                    })
+            };
 
-            var ingredients = new[]
-            {
-            new AvailableIngredient("Bread", 4),
-            new AvailableIngredient("Lettuce", 3)
-        };
+                var ingredients = new[]
+                {
+                new AvailableIngredient("Bread", 4),
+                new AvailableIngredient("Lettuce", 3)
+            };
 
             var result =
                 _optimizer.Optimize(
@@ -60,35 +60,35 @@ namespace UnitTests.RecipeOptimization
         {
             var recipes = new[]
             {
-            new Recipe(
-                "Meal",
-                3,
-                new[]
-                {
-                    new IngredientRequirement("Rice", 2),
-                    new IngredientRequirement("Chicken", 1)
-                })
-        };
+                new Recipe(
+                    "Meal",
+                    3,
+                    new[]
+                    {
+                        new IngredientRequirement("Rice", 2),
+                        new IngredientRequirement("Chicken", 1)
+                    })
+            };
 
             var ingredients = new[]
             {
-            new AvailableIngredient("Rice", 5),
-            new AvailableIngredient("Chicken", 2)
-        };
+                new AvailableIngredient("Rice", 5),
+                new AvailableIngredient("Chicken", 2)
+            };
 
             var result =
                 _optimizer.Optimize(
                     recipes,
                     ingredients);
 
-            Assert.Equal(3, result.PeopleFed);
+            Assert.Equal(6, result.PeopleFed);
 
             Assert.Equal(
                 1,
                 result.UnusedIngredients["Rice"]);
 
             Assert.Equal(
-                1,
+                0,
                 result.UnusedIngredients["Chicken"]);
         }
 
