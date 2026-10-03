@@ -1,4 +1,5 @@
-﻿using Domain.Optimization;
+﻿using Domain.Models;
+using Domain.Optimization;
 using MediatR;
 
 namespace Application.Features.Optimization
@@ -21,9 +22,28 @@ namespace Application.Features.Optimization
 
             cancellationToken.ThrowIfCancellationRequested();
 
+            var recipes = request.Recipes
+                .Select(recipe =>
+                    new Recipe(
+                        recipe.Name,
+                        recipe.Servings,
+                        recipe.Ingredients.Select(
+                            ingredient =>
+                                new IngredientRequirement(
+                                    ingredient.Name,
+                                    ingredient.Quantity))))
+                .ToArray();
+
+            var availableIngredients = request.AvailableIngredients
+                .Select(ingredient =>
+                    new AvailableIngredient(
+                        ingredient.Name,
+                        ingredient.Quantity))
+                .ToArray();
+
             var result = _optimizer.Optimize(
-                request.Recipes,
-                request.AvailableIngredients);
+                recipes,
+                availableIngredients);
 
             var allocations = result.Allocations
                 .Select(allocation =>
@@ -33,12 +53,11 @@ namespace Application.Features.Optimization
                         allocation.PeopleFed))
                 .ToArray();
 
-            var response = new OptimizeRecipesResult(
-                allocations,
-                result.PeopleFed,
-                result.UnusedIngredients);
-
-            return Task.FromResult(response);
+            return Task.FromResult(
+                new OptimizeRecipesResult(
+                    allocations,
+                    result.PeopleFed,
+                    result.UnusedIngredients));
         }
     }
 }
