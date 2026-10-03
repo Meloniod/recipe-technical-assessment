@@ -17,17 +17,21 @@ namespace UnitTests.Optimization
             var command = new OptimizeRecipesCommand(
                 new[]
                 {
-                new Recipe(
-                    "Sandwich",
-                    2,
-                    new[]
-                    {
-                        new IngredientRequirement("Bread", 2)
-                    })
+                    new RecipeInput(
+                        "Sandwich",
+                        2,
+                        new[]
+                        {
+                            new IngredientRequirementInput(
+                                "Bread",
+                                2)
+                        })
                 },
                 new[]
                 {
-                new AvailableIngredient("Bread", 4)
+                    new AvailableIngredientInput(
+                        "Bread",
+                        4)
                 });
 
             var result = await handler.Handle(
@@ -60,8 +64,8 @@ namespace UnitTests.Optimization
             cancellationTokenSource.Cancel();
 
             var command = new OptimizeRecipesCommand(
-                Array.Empty<Recipe>(),
-                Array.Empty<AvailableIngredient>());
+                Array.Empty<RecipeInput>(),
+                Array.Empty<AvailableIngredientInput>());
 
             await Assert.ThrowsAsync<OperationCanceledException>(
                 () => handler.Handle(
