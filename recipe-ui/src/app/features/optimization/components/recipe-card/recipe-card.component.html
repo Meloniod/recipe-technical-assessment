@@ -1,0 +1,140 @@
+<article class="recipe-card">
+  <header class="recipe-header">
+    <div>
+      <span class="recipe-number">
+        Recipe
+      </span>
+
+      <h3>
+        {{ nameControl.value || 'New recipe' }}
+      </h3>
+    </div>
+
+    <button
+      type="button"
+      class="remove-button"
+      (click)="remove.emit()">
+
+      Remove recipe
+
+    </button>
+  </header>
+
+  <div class="recipe-details">
+    <div class="field">
+      <label for="recipe-name">
+        Recipe name
+      </label>
+
+      <input
+        id="recipe-name"
+        type="text"
+        placeholder="e.g. Sandwich"
+        [formControl]="nameControl"
+        autocomplete="off" />
+
+      @if (
+        nameControl.invalid &&
+        nameControl.touched
+      ) {
+        <small class="field-error">
+          Recipe name is required.
+        </small>
+      }
+    </div>
+
+    <div class="field servings">
+      <label for="recipe-servings">
+        Servings
+      </label>
+
+      <input
+        id="recipe-servings"
+        type="number"
+        min="1"
+        [formControl]="servingsControl" />
+
+      @if (
+        servingsControl.invalid &&
+        servingsControl.touched
+      ) {
+        <small class="field-error">
+          Servings must be greater than zero.
+        </small>
+      }
+    </div>
+  </div>
+
+  <div class="requirements">
+    <div class="requirements-header">
+      <div>
+        <h4>Ingredients required</h4>
+
+        <p>
+          Define what one recipe needs.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="secondary-button"
+        (click)="addRequirement.emit()">
+
+        + Add ingredient
+
+      </button>
+    </div>
+
+    @if (requirements.length === 0) {
+      <p class="empty-state">
+        Add at least one ingredient.
+      </p>
+    }
+
+    @for (
+      requirement of requirements.controls;
+      track $index;
+      let i = $index
+    ) {
+      <div class="requirement-row">
+
+        <div class="field">
+          <label [for]="'requirement-name-' + i">
+            Ingredient
+          </label>
+
+          <input
+            [id]="'requirement-name-' + i"
+            type="text"
+            placeholder="e.g. Bread"
+            [formControl]="getRequirementNameControl(i)"
+            autocomplete="off" />
+        </div>
+
+        <div class="field">
+          <label [for]="'requirement-quantity-' + i">
+            Quantity
+          </label>
+
+          <input
+            [id]="'requirement-quantity-' + i"
+            type="number"
+            min="1"
+            [formControl]="
+              getRequirementQuantityControl(i)
+            " />
+        </div>
+
+        <button
+          type="button"
+          class="remove-requirement"
+          (click)="removeRequirement.emit(i)">
+
+          Remove
+
+        </button>
+
+      </div>
+    }
+  </div>
+</article>

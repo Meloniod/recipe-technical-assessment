@@ -1,0 +1,137 @@
+.recipe-card {
+  padding: 1.25rem;
+  border: 1px solid #ddd;
+  border-radius: 0.9rem;
+}
+
+.recipe-card + .recipe-card {
+  margin-top: 1rem;
+}
+
+.recipe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.recipe-number {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+h3 {
+  margin-top: 0.25rem;
+}
+
+.recipe-details {
+  display: grid;
+  gap: 1rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+label {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+input {
+  width: 100%;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  font: inherit;
+}
+
+input:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.requirements {
+  margin-top: 1.75rem;
+}
+
+.requirements-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.requirements-header p {
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+}
+
+.requirement-row {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem 0;
+  border-top: 1px solid #e5e5e5;
+}
+
+.secondary-button,
+.remove-button,
+.remove-requirement {
+  width: fit-content;
+  margin: 0;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.secondary-button {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.remove-button {
+  font-size: 0.8rem;
+}
+
+.remove-requirement {
+  font-size: 0.75rem;
+}
+
+.field-error {
+  font-size: 0.75rem;
+}
+
+.empty-state {
+  padding: 1rem;
+  border: 1px dashed #ccc;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+}
+
+@media (min-width: 700px) {
+  .recipe-details {
+    grid-template-columns: minmax(0, 1fr) 160px;
+  }
+
+  .requirement-row {
+    grid-template-columns: minmax(0, 1fr) 140px auto;
+    align-items: end;
+  }
+}
