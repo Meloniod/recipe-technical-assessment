@@ -1,12 +1,18 @@
 <main class="optimization-page">
-  <header class="page-header">
-    <p class="eyebrow">Recipe Optimization</p>
 
-    <h1>Feed as many people as possible.</h1>
+  <header class="page-header">
+    <p class="eyebrow">
+      Recipe Optimization
+    </p>
+
+    <h1>
+      Feed as many people as possible.
+    </h1>
 
     <p class="intro">
-      Enter the ingredients you have and the available recipes.
-      We'll calculate the optimal combination.
+      Enter the ingredients you have and the recipes
+      available to you. The optimizer will determine
+      the best combination.
     </p>
   </header>
 
@@ -14,37 +20,115 @@
 
     <form
       class="optimization-form"
-      [formGroup]="form"
       (ngSubmit)="optimize()">
 
-      <div class="form-section">
+      <!-- AVAILABLE INGREDIENTS -->
+
+      <section class="form-section">
+
         <div class="section-heading">
           <div>
-            <h2>Available ingredients</h2>
+            <h2>
+              Available ingredients
+            </h2>
+
             <p>
-              Tell us what you currently have available.
+              Enter the quantity you currently have.
             </p>
           </div>
+
+          <button
+            type="button"
+            class="secondary-button"
+            (click)="addIngredient()">
+
+            + Add ingredient
+
+          </button>
         </div>
 
-        <!-- Dynamic ingredient controls go here -->
-      </div>
+        <div class="ingredient-list">
 
-      <div class="form-section">
+          @for (
+            ingredient of availableIngredients.controls;
+            track $index;
+            let i = $index
+          ) {
+
+            <app-ingredient-row
+              [nameControl]="
+                ingredient.controls.name
+              "
+              [quantityControl]="
+                ingredient.controls.quantity
+              "
+              (remove)="removeIngredient(i)" />
+
+          }
+
+        </div>
+
+      </section>
+
+
+      <!-- RECIPES -->
+
+      <section class="form-section">
+
         <div class="section-heading">
           <div>
-            <h2>Recipes</h2>
+            <h2>
+              Recipes
+            </h2>
+
             <p>
-              Define the recipes the optimizer can use.
+              Define what each recipe requires.
             </p>
           </div>
+
+          <button
+            type="button"
+            class="secondary-button"
+            (click)="addRecipe()">
+
+            + Add recipe
+
+          </button>
         </div>
 
-        <!-- Dynamic recipe controls go here -->
-      </div>
+        <div class="recipe-list">
+
+          @for (
+            recipe of recipes.controls;
+            track $index;
+            let i = $index
+          ) {
+
+            <app-recipe-card
+              [recipe]="recipe"
+              [requirements]="
+                recipe.controls.ingredients
+              "
+              (remove)="removeRecipe(i)"
+              (addRequirement)="
+                addRequirement(i)
+              "
+              (removeRequirement)="
+                removeRequirement(i, $event)
+              " />
+
+          }
+
+        </div>
+
+      </section>
+
+
+      <!-- SUBMIT -->
 
       <button
         type="submit"
+        class="primary-button"
         [disabled]="loading()">
 
         @if (loading()) {
@@ -57,61 +141,118 @@
 
     </form>
 
-    @if (error()) {
-      <section
-        class="error-message"
-        role="alert">
 
-        {{ error() }}
+    <!-- RESULT -->
 
-      </section>
-    }
+    <div class="result-column">
 
-    @if (result(); as optimizationResult) {
-      <section
-        class="results"
-        aria-live="polite">
+      @if (error()) {
 
-        <p class="eyebrow">
-          Optimization result
-        </p>
+        <section
+          class="error-message"
+          role="alert">
 
-        <h2>
-          {{ optimizationResult.peopleFed }}
-          people can be fed
-        </h2>
+          {{ error() }}
 
-        <div class="allocations">
+        </section>
 
-          @for (
-            allocation of optimizationResult.allocations;
-            track allocation.recipeName
+      }
+
+      @if (result(); as optimizationResult) {
+
+        <section
+          class="results"
+          aria-live="polite">
+
+          <p class="eyebrow">
+            Optimization result
+          </p>
+
+          <h2>
+            {{ optimizationResult.peopleFed }}
+            people can be fed
+          </h2>
+
+          @if (
+            optimizationResult.allocations.length === 0
           ) {
-            <article class="allocation">
 
-              <div>
-                <h3>
-                  {{ allocation.recipeName }}
-                </h3>
+            <p>
+              None of the available recipes can
+              currently be produced.
+            </p>
 
-                <p>
-                  {{ allocation.quantity }}
-                  × recipe
-                </p>
-              </div>
+          } @else {
 
-              <strong>
-                {{ allocation.peopleFed }}
-                people
-              </strong>
+            <div class="allocations">
 
-            </article>
+              @for (
+                allocation of
+                  optimizationResult.allocations;
+                track allocation.recipeName
+              ) {
+
+                <article class="allocation">
+
+                  <div>
+                    <h3>
+                      {{ allocation.recipeName }}
+                    </h3>
+
+                    <p>
+                      {{ allocation.quantity }}
+                      × recipe
+                    </p>
+                  </div>
+
+                  <strong>
+                    {{ allocation.peopleFed }}
+                    people
+                  </strong>
+
+                </article>
+
+              }
+
+            </div>
+
           }
 
-        </div>
+          <div class="unused-ingredients">
 
-      </section>
-    }
+            <h3>
+              Remaining ingredients
+            </h3>
+
+            @for (
+              ingredient of
+                optimizationResult.unusedIngredients
+                | keyvalue;
+              track ingredient.key
+            ) {
+
+              <div class="remaining-item">
+
+                <span>
+                  {{ ingredient.key }}
+                </span>
+
+                <strong>
+                  {{ ingredient.value }}
+                </strong>
+
+              </div>
+
+            }
+
+          </div>
+
+        </section>
+
+      }
+
+    </div>
 
   </section>
+
 </main>
