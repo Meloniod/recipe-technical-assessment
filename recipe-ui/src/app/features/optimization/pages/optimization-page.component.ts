@@ -37,7 +37,20 @@ import {
 import {
   OptimizationExampleService
 } from '../services/optimization-example.service';
+
 import { duplicateNamesValidator } from '../validators/optimization-form.validators';
+
+import {
+  getApiErrorMessage
+} from '../../../core/http/api-error-message';
+
+import {
+  DestroyRef,
+} from '@angular/core';
+
+import {
+  takeUntilDestroyed
+} from '@angular/core/rxjs-interop';
 
 type IngredientForm = FormGroup<{
   name: FormControl<string>;
@@ -103,6 +116,8 @@ export class OptimizationPageComponent {
 
     readonly examples = this.exampleService.examples;
 
+    private readonly destroyRef = inject(DestroyRef);
+
   constructor() {
     this.addIngredient();
     this.addRecipe();
@@ -166,6 +181,9 @@ export class OptimizationPageComponent {
 
         this.optimizationService
             .optimize(request)
+            .pipe(
+                takeUntilDestroyed(this.destroyRef)
+            )
             .subscribe({
             next: result => {
                 this.result.set(result);
@@ -174,12 +192,12 @@ export class OptimizationPageComponent {
 
             error: error => {
                 console.error(
-                'Recipe optimization failed:',
-                error
+                    'Recipe optimization failed:',
+                    error
                 );
 
                 this.error.set(
-                'Unable to calculate the optimal combination. Please try again.'
+                    getApiErrorMessage(error)
                 );
 
                 this.loading.set(false);
@@ -247,6 +265,7 @@ export class OptimizationPageComponent {
             this.recipes.push(recipeForm);
         }
         }
+    
 
   private createIngredient(
     name = '',
@@ -354,4 +373,5 @@ export class OptimizationPageComponent {
         this.result.set(null);
         this.error.set(null);
     }
+    
 }
