@@ -16,6 +16,50 @@
     </p>
   </header>
 
+  <section class="quick-start">
+    <div>
+        <p class="eyebrow">
+        Quick start
+        </p>
+
+        <h2>
+        Don't want to enter everything manually?
+        </h2>
+
+        <p>
+        Load an example and edit it before running
+        the optimizer.
+        </p>
+    </div>
+
+    <div class="quick-start-control">
+        <label for="example-select">
+        Load example
+        </label>
+
+        <select
+            id="example-select"
+            #exampleSelect
+            [value]="selectedExampleId()"
+            (change)="loadExample(exampleSelect.value)">
+
+        <option value="">
+            Select an example...
+        </option>
+
+        @for (
+            example of examples;
+            track example.id
+        ) {
+            <option [value]="example.id">
+            {{ example.name }}
+            </option>
+        }
+
+        </select>
+    </div>
+    </section>
+
   <section class="optimization-layout">
 
     <form
@@ -123,7 +167,15 @@
         </div>
 
       </section>
+      
+      <button
+            type="button"
+            class="secondary-button reset-button"
+            (click)="resetForm()">
 
+            Reset
+
+        </button>
 
       <!-- SUBMIT -->
 

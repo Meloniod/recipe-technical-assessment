@@ -22,6 +22,7 @@ import {
 } from '../services/optimization.service';
 
 import {
+    OptimizeRecipesRequest,
   OptimizeRecipesResponse
 } from '../models/optimization.models';
 
@@ -32,6 +33,10 @@ import {
 import {
   RecipeCardComponent
 } from '../components/recipe-card/recipe-card.component';
+
+import {
+  OptimizationExampleService
+} from '../services/optimization-example.service';
 
 type IngredientForm = FormGroup<{
   name: FormControl<string>;
@@ -79,10 +84,16 @@ export class OptimizationPageComponent {
   readonly recipes =
     new FormArray<RecipeForm>([]);
 
+    readonly selectedExampleId = signal('');
+
     readonly form = new FormGroup({
     availableIngredients: this.availableIngredients,
     recipes: this.recipes
     });
+
+    private readonly exampleService = inject(OptimizationExampleService);
+
+    readonly examples = this.exampleService.examples;
 
   constructor() {
     this.addIngredient();
@@ -164,80 +175,162 @@ export class OptimizationPageComponent {
             });
         }
 
-  private createIngredient(): IngredientForm {
-    return new FormGroup({
-      name: new FormControl(
-        '',
-        {
-          nonNullable: true,
-          validators: [
-            Validators.required,
-            Validators.maxLength(100)
-          ]
+    loadExample(id: string): void {
+        if (!id) {
+            return;
         }
-      ),
 
-      quantity: new FormControl(
-        0,
-        {
-          nonNullable: true,
-          validators: [
-            Validators.min(0)
-          ]
+        const example =
+            this.exampleService.getById(id);
+
+        if (!example) {
+            return;
         }
-      )
-    });
+
+        this.loadPayload(example.payload);
+
+        this.selectedExampleId.set(id);
+
+        this.result.set(null);
+        this.error.set(null);
+    }
+
+    private loadPayload(
+        payload: OptimizeRecipesRequest
+        ): void {
+        this.availableIngredients.clear();
+        this.recipes.clear();
+
+        for (
+            const ingredient of payload.availableIngredients
+        ) {
+            this.availableIngredients.push(
+            this.createIngredient(
+                ingredient.name,
+                ingredient.quantity
+            )
+            );
+        }
+
+        for (
+            const recipe of payload.recipes
+        ) {
+            const recipeForm =
+            this.createRecipe(
+                recipe.name,
+                recipe.servings
+            );
+
+            for (
+            const ingredient of recipe.ingredients
+            ) {
+            recipeForm.controls.ingredients.push(
+                this.createRequirement(
+                ingredient.name,
+                ingredient.quantity
+                )
+            );
+            }
+
+            this.recipes.push(recipeForm);
+        }
+        }
+
+  private createIngredient(
+    name = '',
+    quantity = 0
+    ): IngredientForm {
+        return new FormGroup({
+            name: new FormControl(
+                name,
+                {
+                nonNullable: true,
+                validators: [
+                    Validators.required,
+                    Validators.maxLength(100)
+                ]
+                }
+            ),
+
+            quantity: new FormControl(
+                quantity,
+                {
+                nonNullable: true,
+                validators: [
+                    Validators.min(0)
+                ]
+                }
+            )
+            });
   }
 
-  private createRequirement(): RequirementForm {
-    return new FormGroup({
-      name: new FormControl(
-        '',
-        {
-          nonNullable: true,
-          validators: [
-            Validators.required,
-            Validators.maxLength(100)
-          ]
-        }
-      ),
+  private createRequirement(
+    name = '',
+    quantity = 1
+    ): RequirementForm {
+        return new FormGroup({
+            name: new FormControl(
+                name,
+                {
+                nonNullable: true,
+                validators: [
+                    Validators.required,
+                    Validators.maxLength(100)
+                ]
+                }
+            ),
 
-      quantity: new FormControl(
-        1,
-        {
-          nonNullable: true,
-          validators: [
-            Validators.min(1)
-          ]
-        }
-      )
-    });
+            quantity: new FormControl(
+                quantity,
+                {
+                nonNullable: true,
+                validators: [
+                    Validators.min(1)
+                ]
+                }
+            )
+            });
   }
 
-  private createRecipe(): RecipeForm {
-    return new FormGroup({
-      name: new FormControl(
-        '',
-        {
-          nonNullable: true,
-          validators: [
-            Validators.required,
-            Validators.maxLength(200)
-          ]
-        }
-      ),
+  private createRecipe(
+    name = '',
+    servings = 1
+    ): RecipeForm {
+        return new FormGroup({
+            name: new FormControl(
+                name,
+                {
+                nonNullable: true,
+                validators: [
+                    Validators.required,
+                    Validators.maxLength(200)
+                ]
+                }
+            ),
 
-      servings: new FormControl(
-        1,
-        {
-          nonNullable: true,
-          validators: [
-            Validators.min(1)
-          ]
-        }
-      ),
+            servings: new FormControl(
+                servings,
+                {
+                nonNullable: true,
+                validators: [
+                    Validators.min(1)
+                ]
+                }
+            ),
 
-      ingredients: new FormArray<RequirementForm>([])
-    });
+            ingredients: new FormArray<RequirementForm>([])
+            });
   }
+  resetForm(): void {
+        this.availableIngredients.clear();
+        this.recipes.clear();
+
+        this.addIngredient();
+        this.addRecipe();
+
+        this.selectedExampleId.set('');
+
+        this.result.set(null);
+        this.error.set(null);
+    }
 }
