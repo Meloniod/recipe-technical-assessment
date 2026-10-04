@@ -1,0 +1,117 @@
+<main class="optimization-page">
+  <header class="page-header">
+    <p class="eyebrow">Recipe Optimization</p>
+
+    <h1>Feed as many people as possible.</h1>
+
+    <p class="intro">
+      Enter the ingredients you have and the available recipes.
+      We'll calculate the optimal combination.
+    </p>
+  </header>
+
+  <section class="optimization-layout">
+
+    <form
+      class="optimization-form"
+      [formGroup]="form"
+      (ngSubmit)="optimize()">
+
+      <div class="form-section">
+        <div class="section-heading">
+          <div>
+            <h2>Available ingredients</h2>
+            <p>
+              Tell us what you currently have available.
+            </p>
+          </div>
+        </div>
+
+        <!-- Dynamic ingredient controls go here -->
+      </div>
+
+      <div class="form-section">
+        <div class="section-heading">
+          <div>
+            <h2>Recipes</h2>
+            <p>
+              Define the recipes the optimizer can use.
+            </p>
+          </div>
+        </div>
+
+        <!-- Dynamic recipe controls go here -->
+      </div>
+
+      <button
+        type="submit"
+        [disabled]="loading()">
+
+        @if (loading()) {
+          Calculating...
+        } @else {
+          Find optimal combination
+        }
+
+      </button>
+
+    </form>
+
+    @if (error()) {
+      <section
+        class="error-message"
+        role="alert">
+
+        {{ error() }}
+
+      </section>
+    }
+
+    @if (result(); as optimizationResult) {
+      <section
+        class="results"
+        aria-live="polite">
+
+        <p class="eyebrow">
+          Optimization result
+        </p>
+
+        <h2>
+          {{ optimizationResult.peopleFed }}
+          people can be fed
+        </h2>
+
+        <div class="allocations">
+
+          @for (
+            allocation of optimizationResult.allocations;
+            track allocation.recipeName
+          ) {
+            <article class="allocation">
+
+              <div>
+                <h3>
+                  {{ allocation.recipeName }}
+                </h3>
+
+                <p>
+                  {{ allocation.quantity }}
+                  × recipe
+                </p>
+              </div>
+
+              <strong>
+                {{ allocation.peopleFed }}
+                people
+              </strong>
+
+            </article>
+          }
+
+        </div>
+
+      </section>
+    }
+
+  </section>
+</main>

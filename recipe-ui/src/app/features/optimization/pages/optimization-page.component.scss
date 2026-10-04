@@ -1,0 +1,118 @@
+:host {
+  display: block;
+}
+
+.optimization-page {
+  width: min(1200px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 3rem 0;
+}
+
+.page-header {
+  max-width: 720px;
+  margin-bottom: 3rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2.25rem, 6vw, 4.5rem);
+  line-height: 0.95;
+}
+
+.intro {
+  max-width: 600px;
+  margin-top: 1.25rem;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.optimization-layout {
+  display: grid;
+  gap: 2rem;
+}
+
+.optimization-form,
+.results {
+  padding: 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 1rem;
+}
+
+.form-section + .form-section {
+  margin-top: 2rem;
+}
+
+.section-heading {
+  margin-bottom: 1.5rem;
+}
+
+.section-heading h2,
+.results h2 {
+  margin: 0;
+}
+
+.section-heading p {
+  margin: 0.5rem 0 0;
+}
+
+button {
+  width: 100%;
+  margin-top: 2rem;
+  padding: 0.9rem 1.25rem;
+  border: 0;
+  border-radius: 0.75rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.allocations {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.allocation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 0.75rem;
+}
+
+.allocation h3,
+.allocation p {
+  margin: 0;
+}
+
+.allocation p {
+  margin-top: 0.25rem;
+}
+
+.error-message {
+  padding: 1rem;
+  border: 1px solid #d33;
+  border-radius: 0.75rem;
+}
+
+@media (min-width: 900px) {
+  .optimization-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 0.7fr);
+    align-items: start;
+  }
+}
