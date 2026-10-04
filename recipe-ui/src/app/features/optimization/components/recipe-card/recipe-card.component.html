@@ -85,10 +85,30 @@
       </button>
     </div>
 
-    @if (requirements.length === 0) {
-      <p class="empty-state">
-        Add at least one ingredient.
-      </p>
+    @if (
+        requirements.length === 0 &&
+        requirements.touched
+        ) {
+        <p
+            class="validation-message"
+            role="alert">
+
+            A recipe must contain at least one ingredient.
+
+        </p>
+    }
+
+    @if (
+        requirements.hasError('duplicateNames') &&
+        requirements.touched
+        ) {
+        <p
+            class="validation-message"
+            role="alert">
+
+            Each ingredient can only appear once in a recipe.
+
+        </p>
     }
 
     @for (

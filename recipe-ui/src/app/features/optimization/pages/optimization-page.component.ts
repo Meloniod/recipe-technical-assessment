@@ -37,6 +37,7 @@ import {
 import {
   OptimizationExampleService
 } from '../services/optimization-example.service';
+import { duplicateNamesValidator } from '../validators/optimization-form.validators';
 
 type IngredientForm = FormGroup<{
   name: FormControl<string>;
@@ -79,7 +80,14 @@ export class OptimizationPageComponent {
     signal<OptimizeRecipesResponse | null>(null);
 
   readonly availableIngredients =
-    new FormArray<IngredientForm>([]);
+  new FormArray<IngredientForm>(
+    [],
+    {
+      validators: [
+        duplicateNamesValidator()
+      ]
+    }
+  );
 
   readonly recipes =
     new FormArray<RecipeForm>([]);
@@ -108,7 +116,8 @@ export class OptimizationPageComponent {
 
   removeIngredient(index: number): void {
     this.availableIngredients.removeAt(index);
-  }
+    this.availableIngredients.updateValueAndValidity();
+    }
 
   addRecipe(): void {
     this.recipes.push(
@@ -131,13 +140,16 @@ export class OptimizationPageComponent {
   removeRequirement(
     recipeIndex: number,
     requirementIndex: number
-  ): void {
-    this.recipes
-      .at(recipeIndex)
-      .controls
-      .ingredients
-      .removeAt(requirementIndex);
-  }
+    ): void {
+    const ingredients =
+        this.recipes
+        .at(recipeIndex)
+        .controls
+        .ingredients;
+
+    ingredients.removeAt(requirementIndex);
+    ingredients.updateValueAndValidity();
+    }
 
   optimize(): void {
         if (this.form.invalid) {
@@ -293,34 +305,43 @@ export class OptimizationPageComponent {
   }
 
   private createRecipe(
-    name = '',
-    servings = 1
-    ): RecipeForm {
+        name = '',
+        servings = 1
+        ): RecipeForm {
         return new FormGroup({
             name: new FormControl(
-                name,
-                {
+            name,
+            {
                 nonNullable: true,
                 validators: [
-                    Validators.required,
-                    Validators.maxLength(200)
+                Validators.required,
+                Validators.maxLength(200)
                 ]
-                }
+            }
             ),
 
             servings: new FormControl(
-                servings,
-                {
+            servings,
+            {
                 nonNullable: true,
                 validators: [
-                    Validators.min(1)
+                Validators.required,
+                Validators.min(1)
                 ]
-                }
+            }
             ),
 
-            ingredients: new FormArray<RequirementForm>([])
-            });
-  }
+            ingredients: new FormArray<RequirementForm>(
+            [],
+            {
+                validators: [
+                Validators.minLength(1),
+                duplicateNamesValidator()
+                ]
+            }
+            )
+        });
+        }
   resetForm(): void {
         this.availableIngredients.clear();
         this.recipes.clear();
