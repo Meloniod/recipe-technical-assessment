@@ -1,0 +1,51 @@
+<div class="ingredient-row">
+  <div class="field">
+    <label [for]="'ingredient-name-' + nameControl.value">
+      Ingredient
+    </label>
+
+    <input
+      [id]="'ingredient-name-' + nameControl.value"
+      type="text"
+      placeholder="e.g. Lettuce"
+      [formControl]="nameControl"
+      autocomplete="off" />
+
+    @if (nameControl.invalid && nameControl.touched) {
+      <small class="field-error">
+        Ingredient name is required.
+      </small>
+    }
+  </div>
+
+  <div class="field quantity-field">
+    <label [for]="'ingredient-quantity-' + nameControl.value">
+      Quantity
+    </label>
+
+    <input
+      [id]="'ingredient-quantity-' + nameControl.value"
+      type="number"
+      min="0"
+      [formControl]="quantityControl" />
+
+    @if (
+      quantityControl.invalid &&
+      quantityControl.touched
+    ) {
+      <small class="field-error">
+        Quantity cannot be negative.
+      </small>
+    }
+  </div>
+
+  <button
+    type="button"
+    class="remove-button"
+    aria-label="Remove ingredient"
+    (click)="remove.emit()">
+
+    Remove
+
+  </button>
+</div>

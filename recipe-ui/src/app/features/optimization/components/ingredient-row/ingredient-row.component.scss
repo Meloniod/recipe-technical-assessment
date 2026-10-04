@@ -1,0 +1,54 @@
+.ingredient-row {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+label {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  font: inherit;
+  box-sizing: border-box;
+}
+
+input:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.field-error {
+  font-size: 0.75rem;
+}
+
+.remove-button {
+  width: fit-content;
+  margin: 0;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+@media (min-width: 700px) {
+  .ingredient-row {
+    grid-template-columns: minmax(0, 1fr) 140px auto;
+    align-items: end;
+  }
+}
