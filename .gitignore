@@ -17,11 +17,38 @@
 */.next/
 */out/
 
+# recipe-ui
+recipe-ui/dist/
+recipe-ui/tmp/
+recipe-ui/out-tsc/
+recipe-ui/bazel-out/
+recipe-ui/**/.idea/
+recipe-ui/**/.project
+recipe-ui/**/.classpath
+recipe-ui/**/.c9/
+recipe-ui/**/*.launch
+recipe-ui/**/.settings/
+recipe-ui/**/*.sublime-workspace
+recipe-ui/.vscode/*
+!recipe-ui/.vscode/settings.json
+!recipe-ui/.vscode/tasks.json
+!recipe-ui/.vscode/launch.json
+!recipe-ui/.vscode/extensions.json
+!recipe-ui/.vscode/mcp.json
+recipe-ui/.history/*
+recipe-ui/.angular/cache/
+recipe-ui/connect.lock
+recipe-ui/libpeerconnection.log
+recipe-ui/testem.log
+recipe-ui/typings/
+recipe-ui/**/__screenshots__/
+
 # production
 */build
 
 # misc
 .DS_Store
+Thumbs.db
 *.pem
 
 # debug
