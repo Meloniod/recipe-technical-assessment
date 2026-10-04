@@ -1,6 +1,7 @@
 ﻿using Application.Features.Optimization;
 using Domain.Models;
 using Domain.Optimization;
+using Microsoft.Extensions.Logging;
 
 namespace UnitTests.Optimization
 {
@@ -11,8 +12,7 @@ namespace UnitTests.Optimization
         {
             var optimizer = new StubRecipeOptimizer();
 
-            var handler =
-                new OptimizeRecipesHandler(optimizer);
+            var handler = CreateHandler(optimizer);
 
             var command = new OptimizeRecipesCommand(
                 new[]
@@ -55,8 +55,7 @@ namespace UnitTests.Optimization
         {
             var optimizer = new StubRecipeOptimizer();
 
-            var handler =
-                new OptimizeRecipesHandler(optimizer);
+            var handler = CreateHandler(optimizer);
 
             using var cancellationTokenSource =
                 new CancellationTokenSource();
@@ -71,6 +70,19 @@ namespace UnitTests.Optimization
                 () => handler.Handle(
                     command,
                     cancellationTokenSource.Token));
+        }
+
+        private static OptimizeRecipesHandler CreateHandler(IRecipeOptimizer optimizer)
+        {
+            var loggerFactory =
+                LoggerFactory.Create(_ => { });
+
+            var logger =
+                loggerFactory.CreateLogger<OptimizeRecipesHandler>();
+
+            return new OptimizeRecipesHandler(
+                optimizer,
+                logger);
         }
 
         private sealed class StubRecipeOptimizer : IRecipeOptimizer
