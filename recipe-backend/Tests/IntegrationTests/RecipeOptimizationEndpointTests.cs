@@ -158,5 +158,26 @@ namespace IntegrationTests
                 "Healthy",
                 content);
         }
+
+        [Fact]
+        public async Task Cors_PreflightAllowsConfiguredHttpsOrigin()
+        {
+            using var request = new HttpRequestMessage(
+                HttpMethod.Options,
+                "/api/v1/recipes/optimize");
+            request.Headers.Add("Origin", "https://localhost:4200");
+            request.Headers.Add("Access-Control-Request-Method", "POST");
+            request.Headers.Add("Access-Control-Request-Headers", "content-type");
+
+            var response = await _client.SendAsync(request);
+
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+            Assert.Equal(
+                "https://localhost:4200",
+                response.Headers.GetValues("Access-Control-Allow-Origin").Single());
+            Assert.Contains(
+                "POST",
+                response.Headers.GetValues("Access-Control-Allow-Methods").Single());
+        }
     }
 }

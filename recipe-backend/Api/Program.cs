@@ -1,5 +1,6 @@
 using Api.Endpoints;
 using Api.Exceptions;
+using Api.Options;
 using Application;
 using Domain.Optimization;
 using Microsoft.AspNetCore.Http.Timeouts;
@@ -18,6 +19,35 @@ builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddApplication();
+
+builder.Services
+    .AddOptions<CorsOptions>()
+    .BindConfiguration(CorsOptions.SectionName)
+    .Validate(options =>
+        options.AllowedOrigins is not null &&
+        options.AllowedOrigins.All(origin =>
+            Uri.TryCreate(origin, UriKind.Absolute, out var uri) &&
+            (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps) &&
+            uri.AbsolutePath == "/" &&
+            string.IsNullOrEmpty(uri.Query) &&
+            string.IsNullOrEmpty(uri.Fragment)),
+        "Cors:AllowedOrigins must contain only absolute HTTP or HTTPS origins.")
+    .ValidateOnStart();
+
+var corsOptions = builder.Configuration
+    .GetSection(CorsOptions.SectionName)
+    .Get<CorsOptions>() ?? new CorsOptions();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(CorsOptions.PolicyName, policy =>
+    {
+        policy
+            .WithOrigins(corsOptions.AllowedOrigins)
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 builder.Services.AddSingleton<IRecipeOptimizer, RecipeOptimizer>();
 
@@ -41,6 +71,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseRouting();
+app.UseCors(CorsOptions.PolicyName);
 
 app.UseAuthorization();
 
