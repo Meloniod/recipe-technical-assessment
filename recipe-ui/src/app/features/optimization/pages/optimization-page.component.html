@@ -19,8 +19,9 @@
   <section class="optimization-layout">
 
     <form
-      class="optimization-form"
-      (ngSubmit)="optimize()">
+    class="optimization-form"
+    [formGroup]="form"
+    (ngSubmit)="optimize()">
 
       <!-- AVAILABLE INGREDIENTS -->
 

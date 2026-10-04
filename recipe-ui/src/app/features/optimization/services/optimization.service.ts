@@ -34,6 +34,8 @@ export class OptimizationService {
   optimize(
     request: OptimizeRecipesRequest
   ): Observable<OptimizeRecipesResponse> {
+    console.log("Endpoint URL:", this.endpoint);
+    console.log("OptimizationService.optimize called with request:", request);
     return this.http.post<OptimizeRecipesResponse>(
       this.endpoint,
       request

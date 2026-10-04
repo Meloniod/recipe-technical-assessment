@@ -79,6 +79,11 @@ export class OptimizationPageComponent {
   readonly recipes =
     new FormArray<RecipeForm>([]);
 
+    readonly form = new FormGroup({
+    availableIngredients: this.availableIngredients,
+    recipes: this.recipes
+    });
+
   constructor() {
     this.addIngredient();
     this.addRecipe();
@@ -124,45 +129,40 @@ export class OptimizationPageComponent {
   }
 
   optimize(): void {
-    if (
-      this.availableIngredients.invalid ||
-      this.recipes.invalid
-    ) {
-      this.availableIngredients.markAllAsTouched();
-      this.recipes.markAllAsTouched();
+        if (this.form.invalid) {
+            this.form.markAllAsTouched();
 
-      return;
-    }
-
-    this.loading.set(true);
-    this.error.set(null);
-    this.result.set(null);
-
-    const request = {
-      availableIngredients:
-        this.availableIngredients.getRawValue(),
-
-      recipes:
-        this.recipes.getRawValue()
-    };
-
-    this.optimizationService
-      .optimize(request)
-      .subscribe({
-        next: result => {
-          this.result.set(result);
-          this.loading.set(false);
-        },
-
-        error: () => {
-          this.error.set(
-            'Unable to calculate the optimal combination. Please try again.'
-          );
-
-          this.loading.set(false);
+            return;
         }
-      });
-  }
+
+        this.loading.set(true);
+        this.error.set(null);
+        this.result.set(null);
+
+        const request = this.form.getRawValue();
+
+        this.optimizationService
+            .optimize(request)
+            .subscribe({
+            next: result => {
+                this.result.set(result);
+                this.loading.set(false);
+            },
+
+            error: error => {
+                console.error(
+                'Recipe optimization failed:',
+                error
+                );
+
+                this.error.set(
+                'Unable to calculate the optimal combination. Please try again.'
+                );
+
+                this.loading.set(false);
+            }
+            });
+        }
 
   private createIngredient(): IngredientForm {
     return new FormGroup({
