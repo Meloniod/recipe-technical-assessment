@@ -141,5 +141,22 @@ namespace IntegrationTests
                 HttpStatusCode.BadRequest,
                 response.StatusCode);
         }
+
+        [Fact]
+        public async Task Health_ReturnsHealthy()
+        {
+            var response = await _client.GetAsync("/health");
+
+            Assert.Equal(
+                HttpStatusCode.OK,
+                response.StatusCode);
+
+            var content =
+                await response.Content.ReadAsStringAsync();
+
+            Assert.Equal(
+                "Healthy",
+                content);
+        }
     }
 }

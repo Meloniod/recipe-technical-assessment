@@ -2,6 +2,7 @@ using Api.Endpoints;
 using Api.Exceptions;
 using Application;
 using Domain.Optimization;
+using Microsoft.AspNetCore.Http.Timeouts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,16 @@ builder.Services.AddApplication();
 
 builder.Services.AddSingleton<IRecipeOptimizer, RecipeOptimizer>();
 
+builder.Services.AddHealthChecks();
+
+builder.Services.AddRequestTimeouts(options =>
+{
+    options.DefaultPolicy = new RequestTimeoutPolicy
+    {
+        Timeout = TimeSpan.FromSeconds(300)
+    };
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -36,6 +47,10 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseExceptionHandler();
+
+app.UseRequestTimeouts();
+
+app.MapHealthChecks("/health");
 
 app.MapRecipeOptimizationEndpoints();
 

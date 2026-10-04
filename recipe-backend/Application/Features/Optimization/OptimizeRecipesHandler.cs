@@ -1,6 +1,7 @@
 ﻿using Domain.Models;
 using Domain.Optimization;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Features.Optimization
 {
@@ -8,10 +9,14 @@ namespace Application.Features.Optimization
     : IRequestHandler<OptimizeRecipesCommand, OptimizeRecipesResult>
     {
         private readonly IRecipeOptimizer _optimizer;
+        private readonly ILogger<OptimizeRecipesHandler> _logger;
 
-        public OptimizeRecipesHandler(IRecipeOptimizer optimizer)
+        public OptimizeRecipesHandler(
+            IRecipeOptimizer optimizer,
+            ILogger<OptimizeRecipesHandler> logger)
         {
             _optimizer = optimizer;
+            _logger = logger;
         }
 
         public Task<OptimizeRecipesResult> Handle(
@@ -21,6 +26,11 @@ namespace Application.Features.Optimization
             ArgumentNullException.ThrowIfNull(request);
 
             cancellationToken.ThrowIfCancellationRequested();
+
+            _logger.LogInformation(
+                "Starting recipe optimization. Recipes: {RecipeCount}, Available ingredients: {IngredientCount}",
+                request.Recipes.Count,
+                request.AvailableIngredients.Count);
 
             var recipes = request.Recipes
                 .Select(recipe =>
@@ -52,6 +62,11 @@ namespace Application.Features.Optimization
                         allocation.Quantity,
                         allocation.PeopleFed))
                 .ToArray();
+
+            _logger.LogInformation(
+                "Recipe optimization completed. People fed: {PeopleFed}, Recipes selected: {RecipeCount}",
+                result.PeopleFed,
+                allocations.Length);
 
             return Task.FromResult(
                 new OptimizeRecipesResult(
