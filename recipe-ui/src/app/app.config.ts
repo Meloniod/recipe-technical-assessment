@@ -3,6 +3,10 @@ import {
 } from '@angular/core';
 
 import {
+  provideRouter
+} from '@angular/router';
+
+import {
   provideHttpClient
 } from '@angular/common/http';
 
@@ -11,11 +15,17 @@ import {
 } from './core/config/api.config';
 
 import {
+  routes
+} from './app.routes';
+
+import {
   environment
 } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideRouter(routes),
+
     provideHttpClient(),
 
     {
