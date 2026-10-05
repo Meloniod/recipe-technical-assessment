@@ -24,6 +24,30 @@ The services are connected over a shared Docker network. The Angular frontend ca
 
 Health checks are enabled for both services in the compose configuration so Docker can wait until the backend is ready before starting the frontend and can report service health state cleanly.
 
+## Run Locally Without Docker
+
+Install the .NET 8 SDK, Node.js, and npm first. Run the backend and frontend in separate terminals from the repository root.
+
+### Backend
+
+```powershell
+cd recipe-backend\Api
+dotnet restore
+dotnet run --launch-profile https
+```
+
+The API is available at https://localhost:7105, Swagger UI at https://localhost:7105/swagger, and its health endpoint at https://localhost:7105/health. If the local HTTPS development certificate is not trusted yet, run `dotnet dev-certs https --trust`.
+
+### Frontend
+
+```powershell
+cd recipe-ui
+npm ci
+npm start
+```
+
+Open http://localhost:4200. The frontend's development API URL is configured in `src/assets/app-config.js`; its default, https://localhost:7105, matches the backend's HTTPS launch profile. Update `apiUrl` there if the backend uses a different address. The API's configured CORS origins include the default Angular development origin.
+
 ## Overview
 
 This application solves the assessment problem of determining the optimal combination of recipes that can be produced from available ingredients in order to feed as many people as possible.
@@ -863,4 +887,3 @@ Production behavior should be diagnosable through logs, metrics and traces.
 Distributed components should be introduced when workload, reliability or organizational requirements justify them.
 
 ---
-
