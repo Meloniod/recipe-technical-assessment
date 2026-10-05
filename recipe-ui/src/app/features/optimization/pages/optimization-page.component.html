@@ -1,19 +1,27 @@
 <main class="optimization-page">
 
   <header class="page-header">
-    <p class="eyebrow">
-      Recipe Optimization
-    </p>
+    <div class="hero-copy">
+      <p class="eyebrow">
+        Recipe Optimization
+      </p>
 
-    <h1>
-      Feed as many people as possible.
-    </h1>
+      <h1>
+        Feed as many people as possible.
+      </h1>
 
-    <p class="intro">
-      Enter the ingredients you have and the recipes
-      available to you. The optimizer will determine
-      the best combination.
-    </p>
+      <p class="intro">
+        Enter the ingredients you have and the recipes
+        available to you. The optimizer will determine
+        the best combination.
+      </p>
+    </div>
+
+    <aside class="hero-note" aria-label="Our goal">
+      <span class="hero-note-icon" aria-hidden="true">✳</span>
+      <p>Good food.<br />Less waste.</p>
+      <span class="hero-note-caption">Make every ingredient count.</span>
+    </aside>
   </header>
 
   <section class="quick-start">
@@ -168,29 +176,29 @@
 
       </section>
       
-      <button
-            type="button"
-            class="secondary-button reset-button"
-            (click)="resetForm()">
+      <div class="form-actions">
+        <button
+          type="button"
+          class="secondary-button reset-button"
+          (click)="resetForm()">
 
-            Reset
+          Reset
 
         </button>
 
-      <!-- SUBMIT -->
+        <button
+          type="submit"
+          class="primary-button"
+          [disabled]="loading()">
 
-      <button
-        type="submit"
-        class="primary-button"
-        [disabled]="loading()">
+          @if (loading()) {
+            Calculating...
+          } @else {
+            Find optimal combination
+          }
 
-        @if (loading()) {
-          Calculating...
-        } @else {
-          Find optimal combination
-        }
-
-      </button>
+        </button>
+      </div>
 
     </form>
 
