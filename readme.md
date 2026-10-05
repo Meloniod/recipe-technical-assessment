@@ -1,5 +1,29 @@
 # Recipe Optimization Application
 
+## Local Docker Compose
+
+The application is wired for a two-service local Docker setup:
+
+- Frontend: http://localhost:4200
+- Backend API: http://localhost:8080
+- Backend health endpoint: http://localhost:8080/health
+
+Start everything with:
+
+```bash
+docker-compose up --build
+```
+
+Stop everything with:
+
+```bash
+docker-compose down
+```
+
+The services are connected over a shared Docker network. The Angular frontend calls the backend through the configured runtime API URL, while the ASP.NET backend allows the frontend origin via CORS so the browser can make requests successfully during local development and Docker-based testing.
+
+Health checks are enabled for both services in the compose configuration so Docker can wait until the backend is ready before starting the frontend and can report service health state cleanly.
+
 ## Overview
 
 This application solves the assessment problem of determining the optimal combination of recipes that can be produced from available ingredients in order to feed as many people as possible.
