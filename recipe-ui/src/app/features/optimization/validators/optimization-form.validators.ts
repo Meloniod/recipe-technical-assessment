@@ -4,6 +4,24 @@ import {
   ValidatorFn
 } from '@angular/forms';
 
+export function requiredArrayValidator(): ValidatorFn {
+  return (
+    control: AbstractControl
+  ): ValidationErrors | null => {
+    if (!Array.isArray(control.value)) {
+      return {
+        requiredArray: true
+      };
+    }
+
+    return control.value.length > 0
+      ? null
+      : {
+          requiredArray: true
+        };
+  };
+}
+
 export function duplicateNamesValidator(
   caseInsensitive = true
 ): ValidatorFn {
@@ -27,11 +45,10 @@ export function duplicateNamesValidator(
           : name
       );
 
-    const duplicates =
-      names.filter(
-        (name, index) =>
-          names.indexOf(name) !== index
-      );
+    const duplicates = names.filter(
+      (name, index) =>
+        names.indexOf(name) !== index
+    );
 
     return duplicates.length > 0
       ? {

@@ -38,7 +38,7 @@ import {
   OptimizationExampleService
 } from '../services/optimization-example.service';
 
-import { duplicateNamesValidator } from '../validators/optimization-form.validators';
+import { duplicateNamesValidator, requiredArrayValidator } from '../validators/optimization-form.validators';
 
 import {
   getApiErrorMessage
@@ -354,7 +354,7 @@ export class OptimizationPageComponent {
             [],
             {
                 validators: [
-                Validators.minLength(1),
+                requiredArrayValidator(),
                 duplicateNamesValidator()
                 ]
             }
